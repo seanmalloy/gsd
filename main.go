@@ -1,10 +1,11 @@
 package main
 
 import (
-  "fmt"
+	"fmt"
+	"net"
 )
 
 func main() {
-    fmt.Printf("hello, gsd\n")
+	var name string = "www.google.com"
+	fmt.Println(net.LookupHost(name))
 }
-
