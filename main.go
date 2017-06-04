@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"time"
+	"log"
 )
 
 func getDnsNames(names []string) {
@@ -37,9 +38,26 @@ func pingHosts(name string) {
 	}
 }
 
+func testTcpPort(host string, port string) {
+	var status string
+	timeout := time.Duration(3000000000) // 3 seconds
+	conn, err := net.DialTimeout("tcp", host + ":" + port, timeout)
+	if err != nil {
+		log.Println("Connection error:", err)
+		status = "Unreachable"
+	} else {
+		status = "Online"
+		defer conn.Close()
+	}
+	log.Println(status)
+}
+
 func main() {
 	names := []string{"www.google.com", "www.openbsd.org"}
 	getDnsNames(names)
 
 	pingHosts("8.8.8.8")
+
+	testTcpPort("8.8.8.8", "53")
+	testTcpPort("8.8.8.8", "22")
 }
