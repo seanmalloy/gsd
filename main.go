@@ -2,46 +2,24 @@ package main
 
 import (
 	"fmt"
-	"github.com/tatsushid/go-fastping"
-	"net"
-	"os"
-	"time"
 	"log"
+	"net"
+	"time"
+
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
-func getDnsNames(names []string) {
+func getDNSNames(names []string) {
 	for _, n := range names {
 		addr, _ := net.LookupHost(n)
 		fmt.Println(n, addr[0]) // TODO what to do with multiple results?
 	}
 }
 
-// TODO requires root
-func pingHosts(name string) {
-	p := fastping.NewPinger()
-	//p.Network("udp")
-	ra, err := net.ResolveIPAddr("ip4:icmp", name)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	p.AddIPAddr(ra)
-	p.OnRecv = func(addr *net.IPAddr, rtt time.Duration) {
-		fmt.Printf("IP Addr: %s receive, RTT: %v\n", addr.String(), rtt)
-	}
-	p.OnIdle = func() {
-		fmt.Println("finish")
-	}
-	err = p.Run()
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
-func testTcpPort(host string, port string) {
+func testTCPPort(host string, port string) {
 	var status string
 	timeout := time.Duration(3000000000) // 3 seconds
-	conn, err := net.DialTimeout("tcp", host + ":" + port, timeout)
+	conn, err := net.DialTimeout("tcp", host+":"+port, timeout)
 	if err != nil {
 		log.Println("Connection error:", err)
 		status = "Unreachable"
@@ -52,12 +30,22 @@ func testTcpPort(host string, port string) {
 	log.Println(status)
 }
 
+var (
+	dns  = kingpin.Command("dns", "Get information about hosts from DNS")
+	ping = kingpin.Command("ping", "Get information about hosts from DNS")
+	tcp  = kingpin.Command("tcp", "Get information about hosts from DNS")
+)
+
 func main() {
-	names := []string{"www.google.com", "www.openbsd.org"}
-	getDnsNames(names)
-
-	pingHosts("8.8.8.8")
-
-	testTcpPort("8.8.8.8", "53")
-	testTcpPort("8.8.8.8", "22")
+	switch kingpin.Parse() {
+	case "dns":
+		println("TODO: do DNS look up")
+		names := []string{"www.google.com", "www.openbsd.org"}
+		getDNSNames(names)
+	case "ping":
+		println("TODO: do ping")
+	case "tcp":
+		println("TODO: do tcp connection")
+		testTCPPort("8.8.8.8", "53")
+	}
 }
