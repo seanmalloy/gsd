@@ -1,3 +1,9 @@
 ## Get Server Data
 
-Go lang implementaton of get server data.
+Go Lang implementaton of [get server data](https://github.com/seanmalloy/get-server-data).
+
+### Compile
+```
+$ dep ensure
+$ go build -o gsd
+```
