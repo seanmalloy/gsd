@@ -5,5 +5,5 @@ Go Lang implementaton of [get server data](https://github.com/seanmalloy/get-ser
 ### Compile
 ```
 $ dep ensure
-$ go build -o gsd
+$ go build
 ```
