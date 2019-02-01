@@ -9,12 +9,17 @@ import (
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
-func getDNSNames(names []string) {
-	for _, n := range names {
-		addr, _ := net.LookupHost(n)
-		fmt.Println(n, addr[0]) // TODO what to do with multiple results?
+func getDNSNames(dnsNames *[]string) {
+	for _, name := range *dnsNames {
+		addr, _ := net.LookupHost(name)
+
+		// TODO: do not use fmt here, instead return a data structure
+		fmt.Println(name, addr[0])
 	}
+
 }
+
+// TODO: create function to print output
 
 func testTCPPort(host string, port string) {
 	var status string
@@ -31,17 +36,18 @@ func testTCPPort(host string, port string) {
 }
 
 var (
-	dns  = kingpin.Command("dns", "Get information about hosts from DNS")
-	ping = kingpin.Command("ping", "Get information about hosts from DNS")
-	tcp  = kingpin.Command("tcp", "Get information about hosts from DNS")
+	dns          = kingpin.Command("dns", "Get information about hosts from DNS")
+	dnsHostNames = dns.Arg("hostname", "hostname to lookup in DNS").Required().Strings()
+
+	ping = kingpin.Command("ping", "Get information about hosts from ICMP(ping)")
+
+	tcp = kingpin.Command("tcp", "Get information about a TCP port for hosts")
 )
 
 func main() {
 	switch kingpin.Parse() {
 	case "dns":
-		println("TODO: do DNS look up")
-		names := []string{"www.google.com", "www.openbsd.org"}
-		getDNSNames(names)
+		getDNSNames(dnsHostNames)
 	case "ping":
 		println("TODO: do ping")
 	case "tcp":
