@@ -1,4 +1,4 @@
-Copyright (c) 2018, Sean Malloy
+Copyright (c) 2019, Sean Malloy
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
