@@ -2,10 +2,9 @@
 language: go
 matrix:
   include:
-    - go: 1.11.x
+    - go: 1.13.x
 
 before_install:
-  - go get github.com/golang/dep/cmd/dep
   - go get golang.org/x/lint/golint
 
 install:
@@ -13,7 +12,6 @@ install:
 
 script:
   - gofmt -d .
-  - golint $(go list ./... | grep -v /vendor/)
-  - go vet $(go list ./... | grep -v /vendor/)
-  - dep ensure
+  - golint $(go list ./...)
+  - go vet $(go list ./...)
   - go build
