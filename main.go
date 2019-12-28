@@ -34,6 +34,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/seanmalloy/gsd/pkg/version"
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -64,15 +65,15 @@ func testTCPPort(host string, port string) {
 }
 
 var (
-	dns          = kingpin.Command("dns", "Get information about hosts from DNS")
-	dnsHostNames = dns.Arg("hostname", "hostname to lookup in DNS").Required().Strings()
-
 	ping = kingpin.Command("ping", "Get information about hosts from ICMP(ping)")
-
-	tcp = kingpin.Command("tcp", "Get information about a TCP port for hosts")
+	tcp  = kingpin.Command("tcp", "Get information about a TCP port for hosts")
 )
 
 func main() {
+	dns := kingpin.Command("dns", "Get information about hosts from DNS")
+	dnsHostNames := dns.Arg("hostname", "hostname to lookup in DNS").Required().Strings()
+	kingpin.Command("version", "Print version and exit")
+
 	switch kingpin.Parse() {
 	case "dns":
 		getDNSNames(dnsHostNames)
@@ -81,5 +82,7 @@ func main() {
 	case "tcp":
 		println("TODO: do tcp connection")
 		testTCPPort("8.8.8.8", "53")
+	case "version":
+		version.Print()
 	}
 }
