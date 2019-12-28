@@ -11,7 +11,7 @@ install:
   - # skip
 
 script:
-  - make build
+  - make test-dirty
   - make test
 
 after_success:

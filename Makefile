@@ -24,6 +24,11 @@ test: fmt lint vet test-unit
 test-unit:
 	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
+# Make sure go.mod and go.sum are not modified
+.PHONY: test-dirty
+test-dirty: build
+	git diff --exit-code
+
 .PHONY: fmt
 fmt:
 	test -z "$(shell gofmt -l .)"
