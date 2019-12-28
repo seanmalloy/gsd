@@ -22,7 +22,7 @@ test: fmt lint vet test-unit
 
 .PHONY: test-unit
 test-unit:
-	go test -race ./...
+	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 .PHONY: fmt
 fmt:
