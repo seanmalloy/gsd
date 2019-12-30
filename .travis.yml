@@ -1,4 +1,8 @@
 ---
+branches:
+  only:
+  - master
+  - /^v\d+\.\d+\.\d+$/
 language: go
 matrix:
   include:
