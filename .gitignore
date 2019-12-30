@@ -1,3 +1,4 @@
 *.swp
 gsd
 coverage.txt
+dist/
