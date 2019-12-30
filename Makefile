@@ -11,11 +11,11 @@ all: build
 
 .PHONY: clean
 clean:
-	rm -rf $(BINARY)
+	rm -rf $(BINARY) dist/
 
 .PHONY: build
 build:
-	go build -o $(BINARY) -ldflags $(LDFLAGS)
+	CGO_ENABLED=0 go build -ldflags $(LDFLAGS)
 
 .PHONY: test
 test: fmt lint vet test-unit
@@ -27,7 +27,13 @@ test-unit:
 # Make sure go.mod and go.sum are not modified
 .PHONY: test-dirty
 test-dirty: build
+	go mod tidy
 	git diff --exit-code
+
+# Make sure goreleaser is working
+.PHONY: test-release
+test-release:
+	BRANCH=$(BRANCH) COMMIT=$(COMMIT) DATE=$(DATE) VERSION_PKG=$(VERSION_PKG) goreleaser --snapshot --skip-publish --rm-dist
 
 .PHONY: fmt
 fmt:
@@ -40,3 +46,8 @@ lint:
 .PHONY: vet
 vet:
 	VET_INPUT="$(shell go list ./...)"; go vet $$VET_INPUT
+
+# Requires GITHUB_TOKEN environment variable to be set
+.PHONY: release
+release:
+	BRANCH=$(BRANCH) COMMIT=$(COMMIT) DATE=$(DATE) VERSION_PKG=$(VERSION_PKG) goreleaser
