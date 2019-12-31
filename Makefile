@@ -5,6 +5,7 @@ DATE := $(shell date -u +%Y%m%d-%H:%M:%S)
 VERSION_PKG = github.com/seanmalloy/gsd/pkg/version
 LDFLAGS := "-X ${VERSION_PKG}.Branch=${BRANCH} -X ${VERSION_PKG}.BuildDate=${DATE} \
 	-X ${VERSION_PKG}.GitSHA1=${COMMIT}"
+TAG?=""
 
 .PHONY: all
 all: build
@@ -46,6 +47,11 @@ lint:
 .PHONY: vet
 vet:
 	VET_INPUT="$(shell go list ./...)"; go vet $$VET_INPUT
+
+.PHONY: tag
+tag:
+	git tag -a $(TAG) -m "Release $(TAG)"
+	git push origin $(TAG)
 
 # Requires GITHUB_TOKEN environment variable to be set
 .PHONY: release
