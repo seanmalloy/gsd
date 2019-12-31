@@ -1,0 +1,30 @@
+name: release
+on:
+  push:
+    branches-ignore:
+      - '**'
+    tags:
+      - 'v*.*.*'
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+    - 
+      name: Checkout
+      uses: actions/checkout@v1
+    -
+      name: Set Up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13.5
+    -
+      name: GoReleaser Action
+      run: |
+        curl -L -o /tmp/goreleaser.tar.gz https://github.com/goreleaser/goreleaser/releases/download/${GO_RELEASER_VERSION}/goreleaser_Linux_x86_64.tar.gz
+        sudo tar -xzf /tmp/goreleaser.tar.gz -C /usr/local/bin/
+        sudo chmod +x /usr/local/bin/goreleaser
+        make clean
+        make release
+      env:
+        GO_RELEASER_VERSION: "v0.123.3"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
