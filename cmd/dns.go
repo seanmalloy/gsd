@@ -26,10 +26,38 @@
  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package main
+package cmd
 
-import "github.com/seanmalloy/gsd/cmd"
+import (
+	"github.com/spf13/cobra"
 
-func main() {
-	cmd.Execute()
+	"github.com/seanmalloy/gsd/pkg/dns"
+)
+
+// dnsCmd represents the dns command
+var dnsCmd = &cobra.Command{
+	Use:   "dns",
+	Short: "Get information about hosts from DNS",
+	Long: `Get information about hosts from DNS
+
+For example:
+
+gsd dns www.google.com www.openbsd.org www.spmalloy.com`,
+	Run: func(cmd *cobra.Command, args []string) {
+		dns.GetDNSNames(args)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(dnsCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// dnsCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// dnsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
