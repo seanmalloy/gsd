@@ -6,7 +6,7 @@ sudo: required
 language: go
 matrix:
   include:
-    - go: 1.13.5
+    - go: 1.13.6
 env:
   matrix:
   - GO_RELEASER_VERSION=v0.123.3

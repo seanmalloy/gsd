@@ -26,10 +26,20 @@
  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package main
+package dns
 
-import "github.com/seanmalloy/gsd/cmd"
+import (
+	"fmt"
+	"net"
+)
 
-func main() {
-	cmd.Execute()
+// GetDNSNames prints results from doing DNS lookups.
+func GetDNSNames(dnsNames []string) {
+	for _, name := range dnsNames {
+		addr, _ := net.LookupHost(name)
+
+		// TODO: do not use fmt here, instead return a data structure
+		fmt.Println(name, addr[0])
+	}
+
 }
