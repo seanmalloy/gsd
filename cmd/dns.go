@@ -29,9 +29,8 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-
 	"github.com/seanmalloy/gsd/pkg/dns"
+	"github.com/spf13/cobra"
 )
 
 // dnsCmd represents the dns command
