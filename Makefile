@@ -18,8 +18,16 @@ clean:
 build:
 	CGO_ENABLED=0 go build -ldflags $(LDFLAGS)
 
+.PHONY: vendor
+vendor:
+	go mod vendor
+
+.PHONY: image
+image:
+	docker build . -t quay.io/seanmalloy/gsd:latest
+
 .PHONY: test
-test: fmt lint vet test-unit
+test: lint-all test-unit
 
 .PHONY: test-unit
 test-unit:
@@ -27,26 +35,22 @@ test-unit:
 
 # Make sure go.mod and go.sum are not modified
 .PHONY: test-dirty
-test-dirty: build
+test-dirty: vendor build
 	go mod tidy
 	git diff --exit-code
+	# TODO: also check that there are no untracked files, e.g. extra .go
 
 # Make sure goreleaser is working
 .PHONY: test-release
 test-release:
-	BRANCH=$(BRANCH) COMMIT=$(COMMIT) DATE=$(DATE) VERSION_PKG=$(VERSION_PKG) goreleaser --snapshot --skip-publish --rm-dist
+	BRANCH=$(BRANCH) COMMIT=$(COMMIT) DATE=$(DATE) VERSION_PKG=$(VERSION_PKG) goreleaser release --snapshot --skip-publish --rm-dist
 
-.PHONY: fmt
-fmt:
-	test -z "$(shell gofmt -l .)"
+.PHONY: golangci-lint
+golangci-lint:
+	golangci-lint run
 
-.PHONY: lint
-lint:
-	LINT_INPUT="$(shell go list ./...)"; golint -set_exit_status $$LINT_INPUT
-
-.PHONY: vet
-vet:
-	VET_INPUT="$(shell go list ./...)"; go vet $$VET_INPUT
+.PHONY: lint-all
+lint-all: golangci-lint
 
 .PHONY: tag
 tag:
@@ -56,4 +60,4 @@ tag:
 # Requires GITHUB_TOKEN environment variable to be set
 .PHONY: release
 release:
-	BRANCH=$(BRANCH) COMMIT=$(COMMIT) DATE=$(DATE) VERSION_PKG=$(VERSION_PKG) goreleaser
+	BRANCH=$(BRANCH) COMMIT=$(COMMIT) DATE=$(DATE) VERSION_PKG=$(VERSION_PKG) goreleaser release --rm-dist
